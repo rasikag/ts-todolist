@@ -41,6 +41,13 @@ const TodoList = () => {
 
   const updateTodoToShow = (s: string) => {
     setTodoToShow(s);
+    // if (todoToShow === "all") {
+    //   currentShowingTodos = todos;
+    // } else if (todoToShow === "active") {
+    //   currentShowingTodos = todos.filter((todo) => !todo.complete);
+    // } else if (todoToShow === "complete") {
+    //   currentShowingTodos = todos.filter((todo) => todo.complete);
+    // }
   };
 
   const removeAllTodosThatAreComplete = () => {
@@ -53,15 +60,57 @@ const TodoList = () => {
     <div style={{ margin: "0 auto" }}>
       <div>Hello Hello</div>
       <InputForm addNewTodo={addNewTodo} />
-      {todos.map((t) => (
-        // just define item by item
-        <TodoViewItem
-          key={t.id}
-          todoItem={t}
-          toggleComplete={toggleComplete}
-          onDelete={handleDeleteTodo}
-        />
-      ))}
+      {todos
+        .filter((q) => {
+          if (todoToShow === "all") {
+            return q;
+          } else if (todoToShow === "active" && !q.complete) {
+            // (todo) => !todo.complete);
+            return q;
+          } else if (todoToShow === "complete" && q.complete) {
+            return q;
+          }
+        })
+        .map((t) => (
+          // just define item by item
+          <TodoViewItem
+            key={t.id}
+            todoItem={t}
+            toggleComplete={toggleComplete}
+            onDelete={handleDeleteTodo}
+          />
+        ))}
+      <div>
+        <div>todos left: {todos.filter((todo) => !todo.complete).length}</div>
+        <div>
+          <button onClick={() => updateTodoToShow("all")}>all</button>
+          <button onClick={() => updateTodoToShow("active")}>active</button>
+          <button onClick={() => updateTodoToShow("complete")}>complete</button>
+        </div>
+        {todos.some((todo) => todo.complete) ? (
+          <div>
+            <button onClick={removeAllTodosThatAreComplete}>
+              remove all complete todos
+            </button>
+          </div>
+        ) : null}
+        <div>
+          <button
+            onClick={() => {
+              setTodos((todos) => {
+                const updatedTodos = todos.map((todo) => ({
+                  ...todo,
+                  complete: toggleAllComplete,
+                }));
+                return updatedTodos;
+              });
+              setToggleAllComplete(!toggleAllComplete);
+            }}
+          >
+            toggle all complete: {`${toggleAllComplete}`}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
