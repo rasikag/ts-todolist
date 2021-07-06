@@ -21,7 +21,9 @@ const viewItem = (itemProp: itemProps) => {
         style={{
           textDecoration: itemProp.todoItem.complete ? "line-through" : "",
         }}
-        onClick={innerToggleComplete}
+        onClick={() => {
+          itemProp.toggleComplete(itemProp.todoItem.id);
+        }}
       >
         {itemProp.todoItem.todoText}
       </div>
